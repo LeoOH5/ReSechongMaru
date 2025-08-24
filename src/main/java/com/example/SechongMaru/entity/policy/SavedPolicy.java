@@ -25,6 +25,7 @@ public class SavedPolicy extends BaseTimeEntity {
     @ManyToOne(optional = false) @JoinColumn(name = "policy_id")
     private Policy policy;
 
+    @Builder.Default
     @Column(nullable = false)
     private String status = "saved"; // saved | applied
 
