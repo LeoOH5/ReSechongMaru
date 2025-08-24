@@ -6,8 +6,7 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
-
+description = 'SechongMaru'
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -18,10 +17,35 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	// Core Web & JSON
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // LocalDate/OffsetDateTime 직렬화
+
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Bean Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// @ConfigurationProperties metadata
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	// DB Driver (MariaDB 기준)
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
