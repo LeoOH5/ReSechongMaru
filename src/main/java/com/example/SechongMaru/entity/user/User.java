@@ -21,8 +21,8 @@ import java.util.UUID;
 @Entity @Table(name = "users")
 public class User extends BaseTimeEntity {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id
+    private Long id;
 
     private String name;
 

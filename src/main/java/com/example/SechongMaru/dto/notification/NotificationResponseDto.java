@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public record NotificationResponseDto(
         UUID id,
-        UUID userId,
+        Long userId,
         UUID policyId,
         NotificationType type,
         OffsetDateTime scheduled_for,

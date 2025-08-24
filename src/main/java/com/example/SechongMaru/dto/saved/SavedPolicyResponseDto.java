@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record SavedPolicyResponseDto(
         UUID id,
-        UUID userId,
+        Long userId,
         UUID policyId,
         String status,
         OffsetDateTime savedAt,
