@@ -16,8 +16,8 @@ import java.util.UUID;
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "interest_id"}))
 public class UserInterest {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id @GeneratedValue
+    private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "user_id")
     private User user;
