@@ -1,0 +1,36 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: sechong
+    environment:
+      MYSQL_ROOT_PASSWORD: sechong1234
+      MYSQL_DATABASE: sechong
+      MYSQL_USER: sechong
+      MYSQL_PASSWORD: sechong1234
+    ports:
+      - "3313:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: sechong-phpmyadmin
+    environment:
+      PMA_HOST: mariadb   # 기본적으로 mariadb에 연결
+      PMA_USER: sechong
+      PMA_PASSWORD: sechong1234
+      MYSQL_ROOT_PASSWORD: sechong1234 # MariaDB root 비밀번호
+    ports:
+      - "9013:80"  # phpMyAdmin에 접속하는 포트
+    depends_on:
+      - mariadb
+  redis:
+    image: redis:alpine
+    ports:
+      - "6380:6379"
+    container_name: sechong-redis
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--requirepass", "sequence" ]
+volumes:
+  mariadb_data:
+  redis_data:

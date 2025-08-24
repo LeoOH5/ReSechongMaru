@@ -2,6 +2,8 @@ package com.example.SechongMaru.entity.policy;
 
 import com.example.SechongMaru.entity.common.BaseTimeEntity;
 import com.example.SechongMaru.entity.interest.Interest;
+import com.example.SechongMaru.globals.enums.EligibilityAttribute;
+import com.example.SechongMaru.globals.enums.EligibilityOperator;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;

@@ -7,6 +7,7 @@ plugins {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 description = 'SechongMaru'
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -17,6 +18,10 @@ repositories {
 	mavenCentral()
 }
 
+/**
+ * Lombok은 annotationProcessor로 처리되므로
+ * compileOnly가 annotationProcessor를 상속받도록 설정
+ */
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -24,30 +29,38 @@ configurations {
 }
 
 dependencies {
-	// Core Web & JSON
+	// Web & JSON
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // LocalDate/OffsetDateTime 직렬화
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // LocalDate/Time 직렬화
 
-	// JPA
+	// JPA (Hibernate 6.x 포함)
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// Bean Validation
+	// Bean Validation (jakarta.validation 포함)
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Security (필요 시)
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// @ConfigurationProperties metadata
+	// @ConfigurationProperties 메타데이터
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-	// DB Driver (MariaDB 기준)
+	// DB Driver (MariaDB)
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// 디버깅/검증에 유용: 리플렉션 파라미터 이름 유지
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
 }

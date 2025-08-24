@@ -1,6 +1,9 @@
 package com.example.SechongMaru.entity.user;
 
 import com.example.SechongMaru.entity.common.BaseTimeEntity;
+import com.example.SechongMaru.globals.enums.EmploymentStatus;
+import com.example.SechongMaru.globals.enums.HouseholdType;
+import com.example.SechongMaru.globals.enums.IncomeType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;

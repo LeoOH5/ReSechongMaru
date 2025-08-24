@@ -3,6 +3,7 @@ package com.example.SechongMaru.entity.notification;
 import com.example.SechongMaru.entity.common.BaseTimeEntity;
 import com.example.SechongMaru.entity.policy.Policy;
 import com.example.SechongMaru.entity.user.User;
+import com.example.SechongMaru.globals.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
