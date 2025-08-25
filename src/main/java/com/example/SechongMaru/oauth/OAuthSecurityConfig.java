@@ -21,7 +21,8 @@ public class OAuthSecurityConfig {
                                 "/", "/health",
                                 "/index.html", "/login-test.html",
                                 "/public/**", "/css/**", "/js/**",
-                                "/authorize",                // 시작점
+                                "/authorize",
+                                "/api/authorize",// 시작점
                                 "/oauth2/**",                // OAuth2 시작
                                 "/login/oauth2/**",          // 콜백
                                 "/error"
