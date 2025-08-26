@@ -20,15 +20,15 @@ public class KakaoAuthController {
     private final RestClient http = RestClient.create();
 
     // 카카오 동의 화면으로
-    @GetMapping("/authorize")
+    @GetMapping({"/authorize", "/api/authorize"})
     public ResponseEntity<Void> authorize() {
         HttpHeaders h = new HttpHeaders();
         h.setLocation(URI.create("/oauth2/authorization/kakao"));
         return new ResponseEntity<>(h, HttpStatus.FOUND);
     }
 
-    // 카카오 로그아웃(토큰 무효화) + 우리 세션 종료
-    @GetMapping("/logout")
+    // 카카오 로그아웃(토큰 무효화)
+    @GetMapping({"/logout", "/api/logout"})
     public ResponseEntity<?> logout(OAuth2AuthenticationToken auth, HttpServletRequest req) {
         if (auth == null) return ResponseEntity.status(401).body(Map.of("error", "unauthenticated"));
 
@@ -46,8 +46,8 @@ public class KakaoAuthController {
         return ResponseEntity.ok(kakao);
     }
 
-    // 카카오 연결 해제 + 우리 세션 종료
-    @GetMapping("/unlink")
+    // 카카오 연결 해제
+    @GetMapping({"/unlink", "/api/unlink"})
     public ResponseEntity<?> unlink(OAuth2AuthenticationToken auth, HttpServletRequest req) {
         if (auth == null) return ResponseEntity.status(401).body(Map.of("error", "unauthenticated"));
 
