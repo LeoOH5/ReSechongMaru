@@ -20,8 +20,9 @@ public class CrawlingPolicyService {
     @Transactional
     public Policy upsertOne(CrawlingPolicyRequestDto s) {
         LocalDate start = parseDate(s.applyStart());
-        String urlKey = normalize(s.applyUrl());
+        String urlKey = nullIfBlank(s.applyUrl()); // ★ 빈문자→null 통일
 
+        // ★ 조회 키에도 동일 규칙을 적용해야 upsert가 정확히 동작
         Policy p = policyRepository
                 .findByTitleAndApplyStartAndApplyUrl(nvl(s.title()), start, urlKey)
                 .orElseGet(Policy::new);
@@ -38,15 +39,19 @@ public class CrawlingPolicyService {
         p.setRequiredDocs(toJsonArrayString(s.requiredDocs()));
 
         p.setContactInfo(s.contactInfo());
-        p.setApplyStatus(mapApplyStatus(s.applyStatus())); // "ONLINE"/"OFFLINE"/null 등 문자열
+
+        // ★ 아무 값이나 허용: 그대로 저장
+        p.setApplyStatus(s.applyStatus());
+
+        // ★ URL이든 안내문이든 그대로 저장(요구사항)하되, 빈문자면 null
         p.setApplyUrl(urlKey);
+
         p.setApplyStart(parseDate(s.applyStart()));
         p.setApplyEnd(parseDate(s.applyEnd()));
+
         p.setMoney(s.money());
         p.setDuration(parseIntOrNull(s.duration()));
         p.setExclusiveGroup(s.exclusiveGroup());
-
-        // 🔸 정규화 매핑(PolicyRequiredDoc)은 여기서 하지 않음
 
         return policyRepository.save(p);
     }
@@ -63,27 +68,20 @@ public class CrawlingPolicyService {
     }
 
     // ───────── helpers ─────────
-    private String mapApplyStatus(Integer v) {
-        if (v == null) return null;
-        // 팀 규칙에 맞춰 문자열 선택
-        return (v == 1) ? "ONLINE" : "OFFLINE";
-        // 필요 시 return (v == 1) ? "1" : "0";
-    }
-
     private Integer parseIntOrNull(String s) {
         try { return (s == null || s.isBlank()) ? null : Integer.valueOf(s.trim()); }
         catch (Exception e) { return null; }
     }
 
     private LocalDate parseDate(String s) {
-        try { return (s == null || s.isBlank()) ? null : LocalDate.parse(s); }
+        try { return (s == null || s.isBlank()) ? null : LocalDate.parse(s.trim()); }
         catch (Exception e) { return null; }
     }
 
-    private String normalize(String s) { return (s == null) ? "" : s; }
+    private String nullIfBlank(String s) { return (s == null || s.isBlank()) ? null : s.trim(); }
     private String nvl(String s) { return (s == null) ? "" : s; }
 
-    /** ["A","B"] 형태의 간단 직렬화 (잭슨 사용 가능하면 ObjectMapper로 바꿔도 OK) */
+    /** ["A","B"] 형태의 간단 직렬화 */
     private String toJsonArrayString(List<String> docs) {
         if (docs == null || docs.isEmpty()) return "[]";
         StringBuilder sb = new StringBuilder("[");
@@ -99,7 +97,6 @@ public class CrawlingPolicyService {
     }
 
     private String escapeJson(String s) {
-        // 최소한의 이스케이프만 처리
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

@@ -2,7 +2,7 @@ package com.example.SechongMaru.dto.crawling;
 
 import java.util.List;
 
-/** 크롤링된 정책 JSON을 그대로 받는 DTO */
+/** 크롤링된 정책 JSON을 그대로 받는 DTO (느슨한 타입) */
 public record CrawlingPolicyRequestDto(
         String policyId,            // 항상 null로 옴. 무시 가능
         String cityName,
@@ -13,8 +13,8 @@ public record CrawlingPolicyRequestDto(
         String selectionCriteria,
         List<String> requiredDocs,  // ["임대차계약서", ...]
         String contactInfo,
-        Integer applyStatus,        // 1=온라인, 0=방문, null=불명확
-        String applyUrl,
+        String applyStatus,         // ★ Integer → String (아무 값 허용)
+        String applyUrl,            // 문자열 그대로 (URL이든 문장이든)
         String applyStart,          // "YYYY-MM-DD"
         String applyEnd,            // "YYYY-MM-DD"
         String money,
