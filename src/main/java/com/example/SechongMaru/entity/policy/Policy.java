@@ -1,66 +1,53 @@
 package com.example.SechongMaru.entity.policy;
 
-import com.example.SechongMaru.entity.common.BaseTimeEntity;
+import com.example.SechongMaru.entity.common.BaseTimeEntity; // 있으면 사용, 없으면 @PrePersist로 직접 관리
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "policy",
-        indexes = {
-                @Index(name = "idx_policy_city", columnList = "cityName"),
-                @Index(name = "idx_policy_apply_end", columnList = "applyEnd")
-        })
-public class Policy extends BaseTimeEntity {
+@Table(name = "policies")
+public class Policy extends BaseTimeEntity { // BaseTimeEntity 없으면 제거해도 됨
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
-
-    private String cityName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String title;
 
-    @Lob
-    private String employStatus; // 크롤링 원문 텍스트
-
+    private String cityName;
+    private String employStatus;
     private Integer minAge;
     private Integer maxAge;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String selectionCriteria;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String requiredDocs;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String contactInfo;
 
+    @Column(columnDefinition = "text")
     private String applyStatus;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String applyUrl;
 
     private LocalDate applyStart;
     private LocalDate applyEnd;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String money;
 
-    private Integer duration; // 개월 수
-
-    private String exclusiveGroup;
-
-    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PolicyEligibilityRule> eligibilityRules = new ArrayList<>();
-
-    @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PolicyRequiredDoc> requiredDocLinks = new ArrayList<>();
+    private Integer duration;          // months
+    private String exclusiveGroup;     // mutually exclusive group code
 }
