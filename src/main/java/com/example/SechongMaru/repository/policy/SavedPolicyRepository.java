@@ -13,6 +13,5 @@ public interface SavedPolicyRepository extends JpaRepository<SavedPolicy, Long> 
 
     boolean existsByUser_IdAndPolicy_Id(UUID userId, Long policyId);
 
-    // 삭제 기능 필요 시 사용
-    // void deleteByUser_IdAndPolicy_Id(UUID userId, Long policyId);
+    void deleteByUser_IdAndPolicy_Id(UUID userId, Long policyId);
 }

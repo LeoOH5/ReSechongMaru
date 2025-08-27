@@ -20,12 +20,10 @@ public class PolicyScrapController {
 
     private final PolicyScrapService policyScrapService;
 
-    /** 스크랩(즐겨찾기) 목록 조회 */
+    /** 스크랩 목록 조회 */
     @GetMapping("/scrap")
-    public ResponseEntity<?> getScraps(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+    public ResponseEntity<?> getScraps(@RequestParam(defaultValue = "1") int page,
+                                       @RequestParam(defaultValue = "10") int size) {
         Optional<UUID> userIdOpt = resolveUserId();
         if (userIdOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -35,8 +33,8 @@ public class PolicyScrapController {
         return ResponseEntity.ok(body);
     }
 
-    /** 스크랩(즐겨찾기) 저장 */
-    @PostMapping("/scrap/{policyId}")
+    /** 스크랩 저장 */
+    @PostMapping("/addscrap/{policyId}")
     public ResponseEntity<?> addScrap(@PathVariable Long policyId) {
         Optional<UUID> userIdOpt = resolveUserId();
         if (userIdOpt.isEmpty()) {
@@ -47,7 +45,17 @@ public class PolicyScrapController {
         return ResponseEntity.ok(Map.of("success", true, "policyId", policyId));
     }
 
-    /* ===== util ===== */
+    /** 스크랩 삭제 */
+    @DeleteMapping("/deletescrap/{policyId}")
+    public ResponseEntity<?> deleteScrap(@PathVariable Long policyId) {
+        Optional<UUID> userIdOpt = resolveUserId();
+        if (userIdOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiError("unauthorized", "로그인이 필요합니다."));
+        }
+        policyScrapService.deleteScrap(userIdOpt.get(), policyId);
+        return ResponseEntity.ok(Map.of("success", true, "deletedPolicyId", policyId));
+    }
 
     private Optional<UUID> resolveUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

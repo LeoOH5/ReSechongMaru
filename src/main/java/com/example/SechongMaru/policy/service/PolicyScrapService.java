@@ -79,4 +79,12 @@ public class PolicyScrapService {
 
         savedRepo.save(saved);
     }
+
+    @Transactional
+    public void deleteScrap(UUID userId, Long policyId) {
+        if (!savedRepo.existsByUser_IdAndPolicy_Id(userId, policyId)) {
+            return; // 이미 없으면 무시 (원하면 예외 던져도 됨)
+        }
+        savedRepo.deleteByUser_IdAndPolicy_Id(userId, policyId);
+    }
 }
