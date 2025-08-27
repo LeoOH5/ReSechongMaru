@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,6 +53,12 @@ public class CrawlingPolicyService {
         p.setMoney(s.money());
         p.setDuration(parseIntOrNull(s.duration()));
         p.setExclusiveGroup(s.exclusiveGroup());
+
+        LocalDateTime now = LocalDateTime.now();
+        if (p.getId() == null) {         // 새로 생성되는 경우
+            //p.setCreatedAt(now);
+        }
+        //p.setUpdatedAt(now);
 
         return policyRepository.save(p);
     }
