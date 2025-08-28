@@ -6,21 +6,21 @@ import com.example.SechongMaru.entity.user.User;
 import com.example.SechongMaru.globals.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "notifications", indexes = {
         @Index(name = "idx_notif_user_time", columnList = "user_id, scheduled_for")
 })
 public class Notification extends BaseTimeEntity {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "user_id")
     private User user;

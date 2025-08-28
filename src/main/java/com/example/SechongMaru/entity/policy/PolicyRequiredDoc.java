@@ -3,9 +3,6 @@ package com.example.SechongMaru.entity.policy;
 import com.example.SechongMaru.entity.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
-
-import java.util.UUID;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
@@ -14,8 +11,8 @@ import java.util.UUID;
         uniqueConstraints = @UniqueConstraint(columnNames = {"policy_id", "docKey"}))
 public class PolicyRequiredDoc extends BaseTimeEntity {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "policy_id")
     private Policy policy;

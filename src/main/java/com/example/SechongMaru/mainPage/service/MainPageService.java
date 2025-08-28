@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class MainPageService {
 
     private final SavedPolicyRepository savedRepo;
 
-    public MainPageResponseDto getMain(UUID userIdOrNull, Integer yearOrNull, Integer monthOrNull) {
+    public MainPageResponseDto getMain(Long userIdOrNull, Integer yearOrNull, Integer monthOrNull) {
 
         // 1) 기준 월 계산 (미지정이면 현재 달)
         YearMonth ym = resolveYearMonth(yearOrNull, monthOrNull);

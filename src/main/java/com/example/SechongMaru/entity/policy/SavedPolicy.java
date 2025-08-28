@@ -4,10 +4,8 @@ import com.example.SechongMaru.entity.common.BaseTimeEntity;
 import com.example.SechongMaru.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
@@ -16,8 +14,8 @@ import java.util.UUID;
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "policy_id"}))
 public class SavedPolicy extends BaseTimeEntity {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "user_id")
     private User user;
@@ -26,6 +24,7 @@ public class SavedPolicy extends BaseTimeEntity {
     private Policy policy;
 
     @Column(nullable = false)
+    @Builder.Default
     private String status = "saved"; // saved | applied
 
     private OffsetDateTime savedAt;

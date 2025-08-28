@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class PolicyScrapService {
     private final EntityManager em;
 
     /** 스크랩 목록 조회 */
-    public ScrapListResponseDto getMyScraps(UUID userId, int page, int size) {
+    public ScrapListResponseDto getMyScraps(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), size, Sort.by(Sort.Direction.DESC, "savedAt"));
         Page<SavedPolicy> result = savedRepo.findByUser_Id(userId, pageable);
 
@@ -58,7 +57,7 @@ public class PolicyScrapService {
 
     /** 스크랩 저장 */
     @Transactional
-    public void addScrap(UUID userId, Long policyId) {
+    public void addScrap(Long userId, Long policyId) {
         if (savedRepo.existsByUser_IdAndPolicy_Id(userId, policyId)) {
             // 이미 스크랩되어 있으면 그냥 종료(또는 IllegalStateException 던지는 방식도 가능)
             return;
@@ -81,7 +80,7 @@ public class PolicyScrapService {
     }
 
     @Transactional
-    public void deleteScrap(UUID userId, Long policyId) {
+    public void deleteScrap(Long userId, Long policyId) {
         if (!savedRepo.existsByUser_IdAndPolicy_Id(userId, policyId)) {
             return; // 이미 없으면 무시 (원하면 예외 던져도 됨)
         }

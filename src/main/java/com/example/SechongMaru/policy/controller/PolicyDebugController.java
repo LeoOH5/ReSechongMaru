@@ -52,7 +52,7 @@ public class PolicyDebugController {
         User user = null;
         if (auth != null && auth.getName() != null) {
             try {
-                user = userRepo.findById(UUID.fromString(auth.getName())).orElse(null);
+                user = userRepo.findById(Long.valueOf(auth.getName())).orElse(null);
             } catch (Exception ignored) {}
         }
         if (user == null) return List.of(Map.of("error", "no-user"));

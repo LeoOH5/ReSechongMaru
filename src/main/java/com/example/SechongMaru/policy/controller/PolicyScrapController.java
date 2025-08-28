@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/policy")
@@ -24,7 +23,7 @@ public class PolicyScrapController {
     @GetMapping("/scrap")
     public ResponseEntity<?> getScraps(@RequestParam(defaultValue = "1") int page,
                                        @RequestParam(defaultValue = "10") int size) {
-        Optional<UUID> userIdOpt = resolveUserId();
+        Optional<Long> userIdOpt = resolveUserId();
         if (userIdOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiError("unauthorized", "로그인이 필요합니다."));
@@ -36,7 +35,7 @@ public class PolicyScrapController {
     /** 스크랩 저장 */
     @PostMapping("/addscrap/{policyId}")
     public ResponseEntity<?> addScrap(@PathVariable Long policyId) {
-        Optional<UUID> userIdOpt = resolveUserId();
+        Optional<Long> userIdOpt = resolveUserId();
         if (userIdOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiError("unauthorized", "로그인이 필요합니다."));
@@ -48,7 +47,7 @@ public class PolicyScrapController {
     /** 스크랩 삭제 */
     @DeleteMapping("/deletescrap/{policyId}")
     public ResponseEntity<?> deleteScrap(@PathVariable Long policyId) {
-        Optional<UUID> userIdOpt = resolveUserId();
+        Optional<Long> userIdOpt = resolveUserId();
         if (userIdOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiError("unauthorized", "로그인이 필요합니다."));
@@ -57,11 +56,11 @@ public class PolicyScrapController {
         return ResponseEntity.ok(Map.of("success", true, "deletedPolicyId", policyId));
     }
 
-    private Optional<UUID> resolveUserId() {
+    private Optional<Long> resolveUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null) return Optional.empty();
         try {
-            return Optional.of(UUID.fromString(auth.getPrincipal().toString()));
+            return Optional.of(Long.valueOf(auth.getPrincipal().toString()));
         } catch (IllegalArgumentException ignored) {
             return Optional.empty();
         }

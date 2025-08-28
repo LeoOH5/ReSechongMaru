@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/policy")
@@ -41,7 +40,7 @@ public class PolicyRecommendController {
                 return ResponseEntity.status(401).body(
                         java.util.Map.of("error", "unauthorized", "message", "no principal"));
             }
-            UUID userId = UUID.fromString(auth.getPrincipal().toString());
+            Long userId = Long.valueOf(auth.getPrincipal().toString());
 
             var user = userRepo.findById(userId).orElse(null);
             if (user == null) {

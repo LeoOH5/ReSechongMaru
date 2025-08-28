@@ -8,16 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
-
 
 public interface SavedPolicyRepository extends JpaRepository<SavedPolicy, Long> {
 
-    Page<SavedPolicy> findByUser_Id(UUID userId, Pageable pageable);
+    Page<SavedPolicy> findByUser_Id(Long userId, Pageable pageable);
 
-    boolean existsByUser_IdAndPolicy_Id(UUID userId, Long policyId);
+    boolean existsByUser_IdAndPolicy_Id(Long userId, Long policyId);
 
-    void deleteByUser_IdAndPolicy_Id(UUID userId, Long policyId);
+    void deleteByUser_IdAndPolicy_Id(Long userId, Long policyId);
 
     @Query("""
            select sp
@@ -28,5 +26,5 @@ public interface SavedPolicyRepository extends JpaRepository<SavedPolicy, Long> 
               and (p.applyEnd   is null or p.applyEnd   >= :monthStart)
             order by p.applyEnd asc nulls last
            """)
-    List<SavedPolicy> findMonthlySavedPolicies(UUID userId, LocalDate monthStart, LocalDate monthEnd);
+    List<SavedPolicy> findMonthlySavedPolicies(Long userId, LocalDate monthStart, LocalDate monthEnd);
 }

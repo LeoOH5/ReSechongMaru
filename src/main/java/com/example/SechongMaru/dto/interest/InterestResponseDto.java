@@ -1,8 +1,6 @@
 package com.example.SechongMaru.dto.interest;
 
-import java.util.UUID;
-
 public record InterestResponseDto(
-        UUID id,
+        Long id,
         String name
 ) {}

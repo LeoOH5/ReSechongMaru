@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -29,18 +28,18 @@ public class MainPageController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month
     ) {
-        Optional<UUID> userIdOpt = resolveUserId();
-        UUID userId = userIdOpt.orElse(null);
+        Optional<Long> userIdOpt = resolveUserId();
+        Long userId = userIdOpt.orElse(null);
 
         MainPageResponseDto dto = mainPageService.getMain(userId, year, month);
         return ResponseEntity.ok(dto);
     }
 
-    private Optional<UUID> resolveUserId() {
+    private Optional<Long> resolveUserId() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null) return Optional.empty();
         try {
-            return Optional.of(UUID.fromString(auth.getPrincipal().toString()));
+            return Optional.of(Long.valueOf(auth.getPrincipal().toString()));
         } catch (IllegalArgumentException ignored) {
             return Optional.empty();
         }

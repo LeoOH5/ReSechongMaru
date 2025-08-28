@@ -36,7 +36,7 @@ public class PolicyEligibilityController {
     ) {
         LocalDate baseDate = (date != null) ? date : LocalDate.now(ZoneId.of("Asia/Seoul"));
 
-        Optional<UUID> userId = currentUserId();
+        Optional<Long> userId = currentUserId();
         if (userId.isEmpty()) return List.of();
 
         User user = userRepo.findById(userId.get()).orElse(null);
@@ -55,10 +55,10 @@ public class PolicyEligibilityController {
         )).collect(Collectors.toList());
     }
 
-    private Optional<UUID> currentUserId() {
+    private Optional<Long> currentUserId() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getName() == null) return Optional.empty();
-        try { return Optional.of(UUID.fromString(auth.getName())); }
+        try { return Optional.of(Long.valueOf(auth.getName())); }
         catch (IllegalArgumentException e) { return Optional.empty(); }
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +20,9 @@ public class PolicyDetailService {
 
     /**
      * @param policyId 정책 ID
-     * @param userIdOpt 로그인 사용자 UUID (없으면 비회원)
+     * @param userIdOpt 로그인 사용자 Long ID (없으면 비회원)
      */
-    public PolicyDetailResponseDto getPolicyDetail(Long policyId, Optional<UUID> userIdOpt) {
+    public PolicyDetailResponseDto getPolicyDetail(Long policyId, Optional<Long> userIdOpt) {
         Policy policy = policyRepo.findById(policyId)
                 .orElseThrow(() -> new IllegalArgumentException("정책을 찾을 수 없습니다. id=" + policyId));
 

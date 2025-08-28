@@ -8,10 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public record UserResponseDto(
-        UUID id,
+        Long id,
         String name,
         LocalDate birthDate,
         String cityName,

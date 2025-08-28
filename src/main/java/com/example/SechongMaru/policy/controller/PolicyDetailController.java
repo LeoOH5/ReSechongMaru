@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/policy")
@@ -20,16 +19,16 @@ public class PolicyDetailController {
 
     @GetMapping("/detail/{policyId}")
     public ResponseEntity<PolicyDetailResponseDto> getPolicyDetail(@PathVariable Long policyId) {
-        Optional<UUID> userId = resolveUserId();
+        Optional<Long> userId = resolveUserId();
         PolicyDetailResponseDto dto = policyDetailService.getPolicyDetail(policyId, userId);
         return ResponseEntity.ok(dto);
     }
 
-    private Optional<UUID> resolveUserId() {
+    private Optional<Long> resolveUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal() == null) return Optional.empty();
         try {
-            return Optional.of(UUID.fromString(auth.getPrincipal().toString()));
+            return Optional.of(Long.valueOf(auth.getPrincipal().toString()));
         } catch (IllegalArgumentException ignored) {
             return Optional.empty();
         }

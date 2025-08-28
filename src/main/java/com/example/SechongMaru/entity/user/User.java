@@ -7,22 +7,21 @@ import com.example.SechongMaru.globals.enums.IncomeType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity @Table(name = "users")
 public class User extends BaseTimeEntity {
 
-    @Id @GeneratedValue @UuidGenerator
-    private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
 
@@ -49,5 +48,6 @@ public class User extends BaseTimeEntity {
     private OffsetDateTime connectedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<UserInterest> interests = new ArrayList<>();
 }

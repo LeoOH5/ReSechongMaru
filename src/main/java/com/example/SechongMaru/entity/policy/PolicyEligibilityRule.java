@@ -5,10 +5,8 @@ import com.example.SechongMaru.globals.enums.EligibilityAttribute;
 import com.example.SechongMaru.globals.enums.EligibilityOperator;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,9 +18,8 @@ import java.util.UUID;
 public class PolicyEligibilityRule {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_id")
