@@ -7,5 +7,11 @@ import java.time.OffsetDateTime;
 public record NotificationResponseDto(
         Long id,
         Long userId,
-        Long policyId
+        Long policyId,
+        NotificationType type,
+        OffsetDateTime scheduled_for,
+        OffsetDateTime sentAt,
+        boolean isRead,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt
 ) {}

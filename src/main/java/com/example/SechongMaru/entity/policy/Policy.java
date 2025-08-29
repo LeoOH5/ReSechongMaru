@@ -1,4 +1,3 @@
-
 package com.example.SechongMaru.entity.policy;
 
 import com.example.SechongMaru.entity.common.BaseTimeEntity; // 있으면 사용, 없으면 @PrePersist로 직접 관리

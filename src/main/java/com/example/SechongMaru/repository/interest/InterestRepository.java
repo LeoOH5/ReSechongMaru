@@ -1,5 +1,3 @@
-// src/main/java/com/example/SechongMaru/repository/interest/InterestRepository.java
-
 package com.example.SechongMaru.repository.interest;
 
 import com.example.SechongMaru.entity.interest.Interest;
