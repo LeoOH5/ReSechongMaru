@@ -13,7 +13,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class KakaoLogin implements OAuth2UserService<OAuth2UserRequest, OAuth2Us
         // 2) 업서트 (기존 사용자면 업데이트, 없으면 새로 생성)
         User user = userRepository.findById(kakaoId)
                 .orElseGet(() -> {
+
                     User u = new User();
                     u.setId(kakaoId); // PK = 카카오 id
                     return u;
@@ -65,4 +67,6 @@ public class KakaoLogin implements OAuth2UserService<OAuth2UserRequest, OAuth2Us
         } catch (Exception ignored) {}
         return "카카오사용자";
     }
+
 }
+
