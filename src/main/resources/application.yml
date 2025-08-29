@@ -11,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create # 개발 단계: create로 변경하여 테이블 새로 생성
+      ddl-auto: validate # 개발 단계: 기존 테이블 구조 유지
     properties:
       hibernate:
         format_sql: true
@@ -59,3 +59,4 @@ logging:
   level:
     org.hibernate.SQL: info
     org.springframework.security: info
+    com.example.SechongMaru: debug # 애플리케이션 로그 레벨을 debug로 설정

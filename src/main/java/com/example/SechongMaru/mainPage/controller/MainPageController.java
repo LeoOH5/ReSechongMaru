@@ -3,12 +3,14 @@ package com.example.SechongMaru.mainpage.controller;
 import com.example.SechongMaru.mainpage.dto.MainPageResponseDto;
 import com.example.SechongMaru.mainpage.service.MainPageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -28,19 +30,42 @@ public class MainPageController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month
     ) {
-        Optional<Long> userIdOpt = resolveUserId();
-        Long userId = userIdOpt.orElse(null);
+        try {
+            log.info("MainPageController.getMain() called - year: {}, month: {}", year, month);
+            
+            Optional<Long> userIdOpt = resolveUserId();
+            Long userId = userIdOpt.orElse(null);
+            
+            log.info("Resolved userId: {}", userId);
 
-        MainPageResponseDto dto = mainPageService.getMain(userId, year, month);
-        return ResponseEntity.ok(dto);
+            MainPageResponseDto dto = mainPageService.getMain(userId, year, month);
+            log.info("Successfully retrieved MainPageResponseDto: {}", dto);
+            
+            return ResponseEntity.ok(dto);
+            
+        } catch (Exception e) {
+            log.error("Error in MainPageController.getMain()", e);
+            throw e; // 예외를 다시 던져서 Spring Boot의 기본 에러 핸들러가 처리하도록 함
+        }
     }
 
     private Optional<Long> resolveUserId() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getPrincipal() == null) return Optional.empty();
         try {
-            return Optional.of(Long.valueOf(auth.getPrincipal().toString()));
-        } catch (IllegalArgumentException ignored) {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || auth.getPrincipal() == null) {
+                log.debug("No authentication found");
+                return Optional.empty();
+            }
+            
+            Long userId = Long.valueOf(auth.getPrincipal().toString());
+            log.debug("Resolved userId from authentication: {}", userId);
+            return Optional.of(userId);
+            
+        } catch (IllegalArgumentException e) {
+            log.warn("Failed to parse userId from authentication principal: {}", e.getMessage());
+            return Optional.empty();
+        } catch (Exception e) {
+            log.error("Unexpected error in resolveUserId()", e);
             return Optional.empty();
         }
     }

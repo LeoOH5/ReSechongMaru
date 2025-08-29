@@ -1,17 +1,20 @@
 package com.example.SechongMaru.mainpage.service;
 
 import com.example.SechongMaru.entity.policy.SavedPolicy;
-import com.example.SechongMaru.mainpage.dto.MainPagePolicyCardDto;
 import com.example.SechongMaru.mainpage.dto.MainPageResponseDto;
 import com.example.SechongMaru.repository.policy.SavedPolicyRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MainPageService {
@@ -19,49 +22,81 @@ public class MainPageService {
     private final SavedPolicyRepository savedRepo;
 
     public MainPageResponseDto getMain(Long userIdOrNull, Integer yearOrNull, Integer monthOrNull) {
+        try {
+            log.info("MainPageService.getMain() called - userId: {}, year: {}, month: {}", userIdOrNull, yearOrNull, monthOrNull);
 
-        // 1) 기준 월 계산 (미지정이면 현재 달)
-        YearMonth ym = resolveYearMonth(yearOrNull, monthOrNull);
-        LocalDate monthStart = ym.atDay(1);
-        LocalDate monthEnd = ym.atEndOfMonth();
+            // 1) 기준 월 계산 (미지정이면 현재 달)
+            YearMonth ym = resolveYearMonth(yearOrNull, monthOrNull);
+            LocalDate monthStart = ym.atDay(1);
+            LocalDate monthEnd = ym.atEndOfMonth();
+            
+            log.info("Resolved yearMonth: {}, monthStart: {}, monthEnd: {}", ym, monthStart, monthEnd);
 
-        // 2) 비회원이면 빈 배열 + 달 메타만
-        if (userIdOrNull == null) {
-            return MainPageResponseDto.builder()
-                    .month(MainPageResponseDto.MonthMeta.builder()
-                            .yearMonth(ym.toString())
-                            .monthStart(monthStart.toString())
-                            .monthEnd(monthEnd.toString())
+            // 2) 현재 시간 정보
+            LocalDateTime now = LocalDateTime.now();
+            String serverTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String baseDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            // 3) 비회원이면 빈 배열 + 기본 정보만
+            if (userIdOrNull == null) {
+                log.info("User is not logged in, returning empty response");
+                return MainPageResponseDto.builder()
+                        .serverTime(serverTime)
+                        .baseDate(baseDate)
+                        .range(MainPageResponseDto.Range.builder()
+                                .startDate(monthStart.toString())
+                                .endDate(monthEnd.toString())
+                                .view("month")
+                                .timezone("Asia/Seoul")
+                                .build())
+                        .events(Collections.emptyList())
+                        .metrics(MainPageResponseDto.Metrics.builder()
+                                .countTotal(0)
+                                .build())
+                        .build();
+            }
+
+            // 4) 회원이면: 이번 달과 기간이 겹치는 "즐겨찾기한 정책"만 조회
+            log.info("User is logged in (userId: {}), fetching saved policies", userIdOrNull);
+            List<SavedPolicy> savedInMonth = savedRepo.findMonthlySavedPolicies(
+                    userIdOrNull, monthStart, monthEnd);
+            
+            log.info("Found {} saved policies for the month", savedInMonth.size());
+
+            List<MainPageResponseDto.Event> events = savedInMonth.stream()
+                    .map(sp -> {
+                        var p = sp.getPolicy();
+                        return MainPageResponseDto.Event.builder()
+                                .policyId(p.getId())
+                                .title(p.getTitle())
+                                .applyStart(p.getApplyStart() != null ? p.getApplyStart().toString() : null)
+                                .applyEnd(p.getApplyEnd() != null ? p.getApplyEnd().toString() : null)
+                                .isScraped(true)     // 저장 목록이므로 항상 true
+                                .build();
+                    }).toList();
+
+            MainPageResponseDto result = MainPageResponseDto.builder()
+                    .serverTime(serverTime)
+                    .baseDate(baseDate)
+                    .range(MainPageResponseDto.Range.builder()
+                            .startDate(monthStart.toString())
+                            .endDate(monthEnd.toString())
+                            .view("month")
+                            .timezone("Asia/Seoul")
                             .build())
-                    .items(Collections.emptyList())
+                    .events(events)
+                    .metrics(MainPageResponseDto.Metrics.builder()
+                            .countTotal(events.size())
+                            .build())
                     .build();
+            
+            log.info("Successfully built response with {} items", events.size());
+            return result;
+            
+        } catch (Exception e) {
+            log.error("Error in MainPageService.getMain()", e);
+            throw new RuntimeException("메인 페이지 데이터 조회 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
-
-        // 3) 회원이면: 이번 달과 기간이 겹치는 "즐겨찾기한 정책"만 조회
-        List<SavedPolicy> savedInMonth = savedRepo.findMonthlySavedPolicies(
-                userIdOrNull, monthStart, monthEnd);
-
-        List<MainPagePolicyCardDto> cards = savedInMonth.stream()
-                .map(sp -> {
-                    var p = sp.getPolicy();
-                    return MainPagePolicyCardDto.builder()
-                            .policyId(p.getId())
-                            .title(p.getTitle())
-                            .applyStart(p.getApplyStart())
-                            .applyEnd(p.getApplyEnd())
-                            .scraped(true)     // 저장 목록이므로 항상 true
-                            .recommend(false)   // 추천은 별도 recommend API로 처리
-                            .build();
-                }).toList();
-
-        return MainPageResponseDto.builder()
-                .month(MainPageResponseDto.MonthMeta.builder()
-                        .yearMonth(ym.toString())
-                        .monthStart(monthStart.toString())
-                        .monthEnd(monthEnd.toString())
-                        .build())
-                .items(cards)
-                .build();
     }
 
     private YearMonth resolveYearMonth(Integer year, Integer month) {
