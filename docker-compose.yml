@@ -8,7 +8,7 @@ services:
       MYSQL_USER: sechong
       MYSQL_PASSWORD: sechong1234
     ports:
-      - "3316:3306"
+      - "3313:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
   phpmyadmin:
