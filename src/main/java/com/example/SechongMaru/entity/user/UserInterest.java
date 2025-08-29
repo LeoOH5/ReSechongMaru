@@ -4,10 +4,8 @@ package com.example.SechongMaru.entity.user;
 import com.example.SechongMaru.entity.interest.Interest;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
@@ -16,7 +14,7 @@ import java.util.UUID;
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "interest_id"}))
 public class UserInterest {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "user_id")
@@ -25,5 +23,5 @@ public class UserInterest {
     @ManyToOne(optional = false) @JoinColumn(name = "interest_id")
     private Interest interest;
 
-    private OffsetDateTime createdIt;
+    private OffsetDateTime createdAt;
 }

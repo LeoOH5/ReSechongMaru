@@ -3,10 +3,9 @@ package com.example.SechongMaru.dto.policy;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public record PolicyResponseDto(
-        UUID id,
+        Long id,
         String cityName,
         String title,
         String employStatus,

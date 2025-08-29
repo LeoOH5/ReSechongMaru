@@ -1,9 +1,7 @@
 package com.example.SechongMaru.dto.policy;
 
-import java.util.UUID;
-
 public record PolicyRequiredDocResponseDto(
-        UUID id,
+        Long id,
         String docKey,
         String docUrl
 ) {}

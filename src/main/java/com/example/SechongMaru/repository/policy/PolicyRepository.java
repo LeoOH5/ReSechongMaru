@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PolicyRepository extends JpaRepository<Policy, UUID> {
+public interface PolicyRepository extends JpaRepository<Policy, Long> {
 
     // 기존: 중복 방지/특정 레코드 식별에 사용
     Optional<Policy> findByTitleAndApplyStartAndApplyUrl(String title, LocalDate applyStart, String applyUrl);

@@ -43,6 +43,7 @@ dependencies {
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	// Kakao OAuth2 로그인에 필요
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
