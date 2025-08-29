@@ -10,11 +10,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 
-@Configuration
-@RequiredArgsConstructor
+// @Configuration
+// @RequiredArgsConstructor
 public class OAuthSecurityConfig {
 
-    private final KakaoLogin kakaoLogin;
+    // private final KakaoLogin kakaoLogin;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,7 +39,7 @@ public class OAuthSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .userInfoEndpoint(u -> u.userService(kakaoLogin))
+                        // .userInfoEndpoint(u -> u.userService(kakaoLogin))
                         .defaultSuccessUrl("/index.html?login=success", true)
                 )
                 .logout(l -> l.disable()) // 기본 /logout 비활성화

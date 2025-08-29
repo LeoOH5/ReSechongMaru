@@ -110,9 +110,9 @@ public class MyService {
         if (req == null) return;
 
         // 목표 집합(target) 만들기: id + name(upsert)
-        Set<UUID> targetIds = new LinkedHashSet<>();
+        Set<Long> targetIds = new LinkedHashSet<>();
         if (req.interestIds() != null) {
-            for (UUID id : req.interestIds()) if (id != null) targetIds.add(id);
+            for (Long id : req.interestIds()) if (id != null) targetIds.add(id);
         }
 
         if (req.interestNames() != null) {
@@ -131,7 +131,7 @@ public class MyService {
         }
 
         // 현재 보유 집합(current)
-        Map<UUID, UserInterest> currentById = new LinkedHashMap<>();
+        Map<Long, UserInterest> currentById = new LinkedHashMap<>();
         for (UserInterest ui : new ArrayList<>(u.getInterests())) { // 복사본 순회
             if (ui.getInterest() != null && ui.getInterest().getId() != null) {
                 currentById.put(ui.getInterest().getId(), ui);
@@ -140,7 +140,7 @@ public class MyService {
 
         // 1) 제거: target에 없는 것들은 제거
         for (UserInterest ui : new ArrayList<>(u.getInterests())) {
-            UUID iid = (ui.getInterest() != null) ? ui.getInterest().getId() : null;
+            Long iid = (ui.getInterest() != null) ? ui.getInterest().getId() : null;
             if (iid == null || !targetIds.contains(iid)) {
                 u.getInterests().remove(ui); // orphanRemoval로 DB 삭제
             }
@@ -149,7 +149,7 @@ public class MyService {
         // 2) 추가: 현재 없고 target에만 있는 것들 추가
         if (!targetIds.isEmpty()) {
             List<Interest> targets = interestRepository.findAllById(targetIds);
-            Set<UUID> existing = currentById.keySet(); // 이미 있는 interest id
+            Set<Long> existing = currentById.keySet(); // 이미 있는 interest id
             for (Interest it : targets) {
                 if (it == null || it.getId() == null) continue;
                 if (!existing.contains(it.getId())) {
@@ -157,7 +157,7 @@ public class MyService {
                             UserInterest.builder()
                                     .user(u)
                                     .interest(it)
-                                    .createdIt(OffsetDateTime.now())
+                                    .createdAt(OffsetDateTime.now())
                                     .build()
                     );
                 }

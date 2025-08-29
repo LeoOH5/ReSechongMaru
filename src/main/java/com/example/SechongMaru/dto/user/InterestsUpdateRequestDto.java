@@ -2,9 +2,8 @@
 package com.example.SechongMaru.dto.user;
 
 import java.util.List;
-import java.util.UUID;
 
 public record InterestsUpdateRequestDto(
-        List<UUID> interestIds,
+        List<Long> interestIds,
         List<String> interestNames
 ) {}

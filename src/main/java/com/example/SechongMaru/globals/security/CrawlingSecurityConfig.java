@@ -9,8 +9,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-@Configuration
-@Order(1) // 기본(카카오) 체인보다 먼저 적용
+// @Configuration
+// @Order(2) // 기본(카카오) 체인보다 나중에 적용
 public class CrawlingSecurityConfig {
 
     /**
@@ -37,7 +37,7 @@ public class CrawlingSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(mvc.pattern("/api/crawling/**")).permitAll()
                         .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
-                        .anyRequest().denyAll() // 혹시 섞여 들어오면 차단(안전)
+                        .anyRequest().authenticated() // 다른 체인에서 처리하도록 인증 필요로 설정
                 )
                 // CSRF는 크롤링/액추에이터에서만 제외
                 .csrf(csrf -> csrf
