@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -38,32 +37,18 @@ public class KakaoLogin implements OAuth2UserService<OAuth2UserRequest, OAuth2Us
         // 2) 업서트 (기존 사용자면 업데이트, 없으면 새로 생성)
         User user = userRepository.findById(kakaoId)
                 .orElseGet(() -> {
-                    // 새 사용자 생성 시 ID는 자동 생성되도록 설정하지 않음
-                    User newUser = User.builder()
-                            .name(nickname)
-                            .birthDate(LocalDate.of(1990, 1, 1)) // 기본값
-                            .cityName("서울시") // 기본값
-                            .employStatus(com.example.SechongMaru.globals.enums.EmploymentStatus.jobSeeker) // 기본값
-                            .incomeType(com.example.SechongMaru.globals.enums.IncomeType.earned) // 기본값
-                            .monthIncomeMin(java.math.BigDecimal.valueOf(0)) // 기본값
-                            .monthIncomeMax(java.math.BigDecimal.valueOf(0)) // 기본값
-                            .householdType(com.example.SechongMaru.globals.enums.HouseholdType.single) // 기본값
-                            .connectedAt(OffsetDateTime.now())
-                            .build();
-                    return newUser;
-                });
-        
-        // 기존 사용자인 경우 이름만 업데이트
-        if (user.getId() != null) {
-            user.setName(nickname);
-        }
-        
-        User savedUser = userRepository.save(user);
 
-        // 3) Security 세션에 저장될 OAuth2User 반환 (저장된 사용자의 ID 사용)
+                    User u = new User();
+                    u.setId(kakaoId); // PK = 카카오 id
+                    return u;
+                });
+        user.setName(nickname);
+        userRepository.save(user);
+
+        // 3) Security 세션에 저장될 OAuth2User 반환
         return new DefaultOAuth2User(
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
-                Map.of("id", savedUser.getId(), "name", savedUser.getName()),
+                attrs,
                 "id"
         );
     }
@@ -82,4 +67,6 @@ public class KakaoLogin implements OAuth2UserService<OAuth2UserRequest, OAuth2Us
         } catch (Exception ignored) {}
         return "카카오사용자";
     }
+
 }
+

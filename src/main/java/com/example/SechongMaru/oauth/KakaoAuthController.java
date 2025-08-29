@@ -64,4 +64,5 @@ public class KakaoAuthController {
         req.getSession().invalidate();
         return ResponseEntity.ok(kakao);
     }
+
 }

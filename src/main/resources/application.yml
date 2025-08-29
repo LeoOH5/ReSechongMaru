@@ -4,14 +4,15 @@ server:
 spring:
   datasource:
     # 로컬(호스트)에서 스프링 실행 + 도커 mariadb 포트포워딩(3313) 사용하는 경우
-    url: jdbc:mariadb://localhost:3316/sechong?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Seoul
+    url: jdbc:mariadb://localhost:3313/sechong?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Seoul
     driver-class-name: org.mariadb.jdbc.Driver
     username: sechong
     password: sechong1234
 
   jpa:
     hibernate:
-      ddl-auto: validate # 개발 단계: 기존 테이블 구조 유지
+      ddl-auto: update          # 개발 단계: update, 운영 전환 시 validate 권장
+
     properties:
       hibernate:
         format_sql: true
@@ -26,11 +27,12 @@ spring:
       client:
         registration:
           kakao:
-            client-id: e7bda790984d6fc10f430435e270d709 # 실제 값
-            client-secret: this-is-client-secret-key # 실제 값
+
+            client-id: e7bda790984d6fc10f430435e270d709     # 실제 값
+            client-secret: this-is-client-secret-key         # 실제 값
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/kakao" # 카카오 콘솔에도 동일 등록
+            redirect-uri: "{baseUrl}/login/oauth2/code/kakao"  # 카카오 콘솔에도 동일 등록
             scope: profile_nickname
             client-name: Kakao
             provider: kakao
@@ -59,4 +61,5 @@ logging:
   level:
     org.hibernate.SQL: info
     org.springframework.security: info
+
     com.example.SechongMaru: debug # 애플리케이션 로그 레벨을 debug로 설정
