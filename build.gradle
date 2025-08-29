@@ -39,9 +39,18 @@ dependencies {
 	// Bean Validation (jakarta.validation 포함)
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// Security (필요 시)
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Kakao OAuth2 로그인에 필요
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// (선택) 세션을 Redis에 저장하려면 아래 주석 해제 + application.yml 설정 추가
+	// implementation 'org.springframework.session:spring-session-data-redis'
+	// implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -55,6 +64,7 @@ dependencies {
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
